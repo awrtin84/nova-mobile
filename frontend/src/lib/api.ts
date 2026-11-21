@@ -22,8 +22,11 @@ export class ApiError extends Error {
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+    const isRead = !init?.method || init.method === "GET";
     const response = await fetch(`${API_URL}${path}`, {
-        cache: "no-store",
+        ...(isRead
+            ? { next: { revalidate: 30 } }
+            : { cache: "no-store" as const }),
         ...init,
         headers: {
             "Content-Type": "application/json",

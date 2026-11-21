@@ -1,62 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useCart } from "./CartProvider";
 import { useUser } from "./UserProvider";
+import SearchBox from "./SearchBox";
 import ThemeToggle from "./ThemeToggle";
 import { useWishlist } from "./WishlistProvider";
 import { fa } from "@/lib/format";
 import type { Category } from "@/lib/types";
-
-function SearchBox() {
-    const router = useRouter();
-    const params = useSearchParams();
-    const [value, setValue] = useState(params.get("q") ?? "");
-
-    return (
-        <form
-            role="search"
-            onSubmit={(event) => {
-                event.preventDefault();
-                const query = value.trim();
-                router.push(
-                    query
-                        ? `/products?q=${encodeURIComponent(query)}`
-                        : "/products",
-                );
-            }}
-            className="relative w-full"
-        >
-            <input
-                value={value}
-                onChange={(event) => setValue(event.target.value)}
-                placeholder="جستجوی گوشی، شارژر، هندزفری…"
-                enterKeyHint="search"
-                className="w-full rounded-2xl border border-transparent bg-slate-900/[.05] py-3 pe-4 ps-12 text-[16px] outline-none transition placeholder:text-ink-mute focus:border-brand-300 focus:bg-white focus:ring-4 focus:ring-brand-100 md:text-sm"
-            />
-            <button
-                type="submit"
-                aria-label="جستجو"
-                className="absolute start-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-xl text-ink-soft transition hover:bg-brand-50 hover:text-brand-700"
-            >
-                <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                >
-                    <circle cx="11" cy="11" r="7" />
-                    <path d="m20 20-3.5-3.5" />
-                </svg>
-            </button>
-        </form>
-    );
-}
 
 function AccountLink() {
     const { user: stored, ready } = useUser();

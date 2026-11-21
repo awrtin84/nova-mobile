@@ -19,6 +19,33 @@ export default function AppFeel() {
     }, [pathname, params]);
 
     useEffect(() => {
+        const nav = navigator as Navigator & {
+            deviceMemory?: number;
+            connection?: { saveData?: boolean };
+        };
+        const weak =
+            (nav.hardwareConcurrency && nav.hardwareConcurrency <= 4) ||
+            (nav.deviceMemory && nav.deviceMemory <= 3) ||
+            nav.connection?.saveData === true;
+        if (weak) document.documentElement.classList.add("lite");
+    }, []);
+
+    useEffect(() => {
+        const targets = Array.from(
+            document.querySelectorAll<HTMLElement>(
+                ".phone-stage, .auth-stage, .hero-night",
+            ),
+        );
+        if (targets.length === 0) return;
+        const watcher = new IntersectionObserver((entries) => {
+            for (const entry of entries)
+                entry.target.classList.toggle("paused", !entry.isIntersecting);
+        });
+        targets.forEach((element) => watcher.observe(element));
+        return () => watcher.disconnect();
+    }, [pathname, params]);
+
+    useEffect(() => {
         let safety: ReturnType<typeof setTimeout> | undefined;
 
         function onClick(event: MouseEvent) {
