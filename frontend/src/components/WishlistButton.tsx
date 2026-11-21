@@ -26,6 +26,8 @@ export default function WishlistButton({ product }: { product: Product }) {
             }`}
         >
             <svg
+                key={String(active)}
+                className={active ? "animate-pop" : ""}
                 width="18"
                 height="18"
                 viewBox="0 0 24 24"

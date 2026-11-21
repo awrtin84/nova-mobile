@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useCart } from "./CartProvider";
+import { useUser } from "./UserProvider";
 import { fa } from "@/lib/format";
 
 const icons: Record<string, React.ReactNode> = {
@@ -28,6 +30,12 @@ const icons: Record<string, React.ReactNode> = {
             <path d="M3 6h11v9H3zM14 9h4l3 3v3h-7" />
             <circle cx="7" cy="17.5" r="1.8" />
             <circle cx="17" cy="17.5" r="1.8" />
+        </>
+    ),
+    user: (
+        <>
+            <circle cx="12" cy="8.5" r="3.8" />
+            <path d="M4.5 20.5c1.2-3.6 4-5.2 7.5-5.2s6.3 1.6 7.5 5.2" />
         </>
     ),
     cart: (
@@ -91,9 +99,14 @@ export default function BottomNav() {
     const pathname = usePathname();
     const params = useSearchParams();
     const { count, ready } = useCart();
+    const { user: stored } = useUser();
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
+    const user = mounted ? stored : null;
 
     const hidden =
         pathname.startsWith("/admin") ||
+        pathname.startsWith("/login") ||
         pathname.startsWith("/checkout") ||
         /^\/products\/[^/]+/.test(pathname);
     if (hidden) return null;
@@ -128,6 +141,7 @@ export default function BottomNav() {
                 <Link
                     href="/cart"
                     aria-label="سبد خرید"
+                    data-cart-target
                     aria-current={inCart ? "page" : undefined}
                     className="relative -mt-9 flex h-[3.6rem] w-[3.6rem] shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-coral-400 via-coral-500 to-brand-600 text-white shadow-glow ring-4 ring-night transition active:scale-95"
                 >
@@ -149,10 +163,11 @@ export default function BottomNav() {
                     active={pathname === "/products" && onSale}
                 />
                 <Item
-                    href="/track"
-                    label="پیگیری"
-                    icon="truck"
+                    href={user ? "/account" : "/login?next=/account"}
+                    label={user ? "حساب" : "ورود"}
+                    icon="user"
                     active={
+                        pathname.startsWith("/account") ||
                         pathname.startsWith("/track") ||
                         pathname.startsWith("/order")
                     }

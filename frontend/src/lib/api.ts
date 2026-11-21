@@ -8,6 +8,7 @@ import type {
     ProductDetail,
     ProductPage,
 } from "./types";
+import { demoApi } from "./demo-api";
 
 export const API_URL =
     process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
@@ -67,7 +68,7 @@ export function buildQuery(query: ProductQuery): string {
     return text ? `?${text}` : "";
 }
 
-export const api = {
+const live = {
     home: () => request<Home>("/api/home"),
     config: () => request<Config>("/api/config"),
     categories: () => request<Category[]>("/api/categories"),
@@ -91,3 +92,9 @@ export const api = {
             body: JSON.stringify(body),
         }),
 };
+
+export const DEMO = process.env.NEXT_PUBLIC_DEMO === "1";
+
+export const api: typeof live = DEMO
+    ? (demoApi as unknown as typeof live)
+    : live;

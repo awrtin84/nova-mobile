@@ -1,8 +1,10 @@
 import Link from "next/link";
+import Phone3D from "@/components/Phone3D";
 import ProductRail from "@/components/ProductRail";
 import ProductVisual from "@/components/ProductVisual";
+import Tilt from "@/components/Tilt";
 import { api } from "@/lib/api";
-import { fa, price } from "@/lib/format";
+import { fa, faRating, price } from "@/lib/format";
 
 const categoryHue: Record<string, number> = {
     mobile: 250,
@@ -43,6 +45,8 @@ export default async function HomePage() {
                         }}
                     />
 
+                    <div className="grid-floor pointer-events-none" />
+
                     <div className="relative grid items-center gap-8 px-5 pb-9 pt-8 md:grid-cols-2 md:gap-10 md:px-14 md:py-16">
                         <div className="animate-fade-up">
                             <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-bold ring-1 ring-white/15 backdrop-blur">
@@ -54,7 +58,9 @@ export default async function HomePage() {
                             </span>
 
                             <h1 className="mt-5 text-[2rem] font-black leading-[1.4] sm:text-5xl md:leading-[1.35]">
-                                گوشی رویایی‌ات
+                                <span className="text-extrude">
+                                    گوشی رویایی‌ات
+                                </span>
                                 <br />
                                 <span className="text-gradient">
                                     با بهترین قیمت
@@ -110,40 +116,14 @@ export default async function HomePage() {
                         </div>
 
                         {featured && (
-                            <div className="relative mx-auto w-full max-w-[19rem] md:max-w-sm">
-                                <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-br from-brand-400/40 to-coral-500/40 blur-2xl" />
-                                <Link
-                                    href={`/products/${featured.slug}`}
-                                    className="relative block animate-float overflow-hidden rounded-[2rem] bg-white text-ink shadow-glow"
-                                >
-                                    <div className="aspect-[5/4]">
-                                        <ProductVisual
-                                            kind={featured.visual_kind}
-                                            hue={featured.hue}
-                                        />
-                                    </div>
-                                    <div className="p-4">
-                                        <p className="text-[11px] font-black text-coral-600">
-                                            پرفروش‌ترین محصول
-                                        </p>
-                                        <p className="mt-1 line-clamp-1 text-sm font-bold">
-                                            {featured.name}
-                                        </p>
-                                        <p className="mt-2 text-lg font-black">
-                                            {price(featured.final_price)}{" "}
-                                            <span className="text-xs font-semibold text-ink-soft">
-                                                تومان
-                                            </span>
-                                        </p>
-                                    </div>
-                                </Link>
-                                <span className="absolute -start-2 top-6 animate-pop rounded-2xl bg-white px-3 py-2 text-xs font-extrabold text-ink shadow-lift">
-                                    ضمانت اصالت
-                                </span>
-                                <span className="absolute -end-2 bottom-24 animate-pop rounded-2xl bg-gradient-to-br from-coral-400 to-coral-600 px-3 py-2 text-xs font-extrabold text-white shadow-lift">
-                                    ارسال سریع
-                                </span>
-                            </div>
+                            <Phone3D
+                                href={`/products/${featured.slug}`}
+                                kind={featured.visual_kind}
+                                hue={featured.hue}
+                                name={featured.name}
+                                price={price(featured.final_price)}
+                                rating={faRating(featured.rating)}
+                            />
                         )}
                     </div>
                 </div>
@@ -152,21 +132,26 @@ export default async function HomePage() {
             <section className="container-page mt-7 md:mt-10">
                 <div className="snap-rail md:grid md:grid-cols-5 md:gap-4 lg:grid-cols-9">
                     {categories.map((category) => (
-                        <Link
+                        <Tilt
                             key={category.slug}
-                            href={`/products?category=${category.slug}`}
-                            className="group flex w-[5.4rem] flex-col items-center gap-2 text-center md:w-auto"
+                            max={14}
+                            className="w-[5.4rem] shrink-0 md:w-auto"
                         >
-                            <span className="block aspect-square w-full overflow-hidden rounded-[1.6rem] shadow-card ring-1 ring-slate-900/[.05] transition duration-300 group-hover:-translate-y-1 group-hover:shadow-lift">
-                                <ProductVisual
-                                    kind={category.kind}
-                                    hue={categoryHue[category.slug] ?? 250}
-                                />
-                            </span>
-                            <span className="text-[12px] font-bold leading-5 text-ink-soft group-hover:text-brand-700">
-                                {category.name}
-                            </span>
-                        </Link>
+                            <Link
+                                href={`/products?category=${category.slug}`}
+                                className="group flex flex-col items-center gap-2 text-center"
+                            >
+                                <span className="z-pop-2 block aspect-square w-full overflow-hidden rounded-[1.6rem] shadow-lift ring-1 ring-slate-900/[.05]">
+                                    <ProductVisual
+                                        kind={category.kind}
+                                        hue={categoryHue[category.slug] ?? 250}
+                                    />
+                                </span>
+                                <span className="z-pop-1 text-[12px] font-bold leading-5 text-ink-soft group-hover:text-brand-700">
+                                    {category.name}
+                                </span>
+                            </Link>
+                        </Tilt>
                     ))}
                 </div>
             </section>

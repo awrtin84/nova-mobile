@@ -9,7 +9,9 @@ type Props = {
 };
 
 export default function Shell({ header, footer, children }: Props) {
-    const isAdmin = usePathname().startsWith("/admin");
+    const pathname = usePathname();
+    const isAdmin =
+        pathname.startsWith("/admin") || pathname.startsWith("/login");
 
     return (
         <>

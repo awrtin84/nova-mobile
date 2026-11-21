@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useCart } from "./CartProvider";
+import { useUser } from "./UserProvider";
 import ThemeToggle from "./ThemeToggle";
 import { useWishlist } from "./WishlistProvider";
 import { fa } from "@/lib/format";
@@ -54,6 +55,39 @@ function SearchBox() {
                 </svg>
             </button>
         </form>
+    );
+}
+
+function AccountLink() {
+    const { user: stored, ready } = useUser();
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
+    const user = mounted ? stored : null;
+    const href = user ? "/account" : "/login";
+    return (
+        <Link
+            href={href}
+            aria-label={user ? "حساب کاربری" : "ورود یا ثبت‌نام"}
+            className="hidden h-12 shrink-0 items-center gap-2 rounded-2xl bg-slate-900/[.05] px-4 text-sm font-extrabold text-ink transition hover:bg-slate-900/[.09] md:flex"
+        >
+            <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+            >
+                <circle cx="12" cy="8.5" r="3.8" />
+                <path d="M4.5 20.5c1.2-3.6 4-5.2 7.5-5.2s6.3 1.6 7.5 5.2" />
+            </svg>
+            <span className="max-w-[7rem] truncate">
+                {ready && user ? user.name || "حساب من" : "ورود | ثبت‌نام"}
+            </span>
+        </Link>
     );
 }
 
@@ -193,6 +227,7 @@ export default function Header({ categories }: { categories: Category[] }) {
                 </div>
 
                 <ThemeToggle />
+                <AccountLink />
                 <CartLink />
             </div>
 

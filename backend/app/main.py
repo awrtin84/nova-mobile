@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, joinedload, selectinload
 
+from .account import router as account_router
 from .admin import router as admin_router
 from .database import Base, SessionLocal, engine, get_db
 from .models import Brand, Category, Order, OrderItem, Product
@@ -60,6 +61,7 @@ app.add_middleware(
 )
 
 app.include_router(admin_router)
+app.include_router(account_router)
 
 
 def product_options():

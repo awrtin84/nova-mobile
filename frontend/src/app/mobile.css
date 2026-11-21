@@ -1,0 +1,95 @@
+html {
+    overscroll-behavior-x: none;
+}
+
+a,
+button,
+summary,
+[role="button"] {
+    touch-action: manipulation;
+}
+
+button,
+summary {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+header.sticky {
+    padding-top: env(safe-area-inset-top);
+}
+
+.page-enter {
+    animation: page-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+@keyframes page-in {
+    from {
+        opacity: 0;
+    }
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(30px) scale(0.985);
+    transition:
+        opacity 0.7s ease,
+        transform 0.85s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.reveal.reveal-in {
+    opacity: 1;
+    transform: none;
+}
+
+.route-progress {
+    position: fixed;
+    inset-inline: 0;
+    top: 0;
+    z-index: 120;
+    height: 3px;
+    pointer-events: none;
+}
+
+.route-progress span {
+    display: block;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: right;
+    background: linear-gradient(90deg, #ff6b5b, #f4ede0, #5b7bc0);
+    box-shadow: 0 0 14px rgba(255, 107, 91, 0.7);
+}
+
+.route-progress[data-phase="run"] span {
+    opacity: 1;
+    transform: scaleX(0.86);
+    transition:
+        transform 9s cubic-bezier(0.1, 0.6, 0.2, 1),
+        opacity 0.2s;
+}
+
+.route-progress[data-phase="done"] span {
+    opacity: 0;
+    transform: scaleX(1);
+    transition:
+        transform 0.25s ease-out,
+        opacity 0.4s ease 0.2s;
+}
+
+@media (hover: none) {
+
+    a:active,
+    button:active {
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

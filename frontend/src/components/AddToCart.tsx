@@ -4,10 +4,12 @@ import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "./CartProvider";
 import { fa, price } from "@/lib/format";
+import { flyToCart } from "@/lib/fly";
+import { haptic } from "@/lib/haptic";
 import type { ProductDetail } from "@/lib/types";
 
 export default function AddToCart({ product }: { product: ProductDetail }) {
-    const { add, lines } = useCart();
+    const { add, lines, count, ready } = useCart();
     const [colorIndex, setColorIndex] = useState(0);
     const [quantity, setQuantity] = useState(1);
 
@@ -19,7 +21,8 @@ export default function AddToCart({ product }: { product: ProductDetail }) {
     const room = Math.max(0, limit - inCart);
     const soldOut = product.stock === 0;
 
-    function addToCart() {
+    function addToCart(source: HTMLElement) {
+        if (room === 0) return;
         add({
             productId: product.id,
             slug: product.slug,
@@ -32,6 +35,8 @@ export default function AddToCart({ product }: { product: ProductDetail }) {
             quantity: Math.min(quantity, room),
         });
         setQuantity(1);
+        haptic([14, 50, 22]);
+        flyToCart(source);
     }
 
     return (
@@ -109,7 +114,7 @@ export default function AddToCart({ product }: { product: ProductDetail }) {
                         <button
                             type="button"
                             disabled={room === 0}
-                            onClick={addToCart}
+                            onClick={(event) => addToCart(event.currentTarget)}
                             className="btn-primary hidden flex-1 !py-4 md:inline-flex"
                         >
                             {room === 0
@@ -135,7 +140,39 @@ export default function AddToCart({ product }: { product: ProductDetail }) {
                                 "calc(env(safe-area-inset-bottom) + 0.75rem)",
                         }}
                     >
-                        <div className="mx-auto flex max-w-md items-center gap-3 rounded-[1.75rem] bg-night/90 p-3 ps-5 shadow-dock ring-1 ring-white/10 backdrop-blur-2xl">
+                        <div className="mx-auto flex max-w-md items-center gap-2.5 rounded-[1.75rem] bg-night/90 p-2.5 ps-3 shadow-dock ring-1 ring-white/10 backdrop-blur-2xl">
+                            <Link
+                                href="/cart"
+                                data-cart-target
+                                aria-label="سبد خرید"
+                                className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-white ring-1 ring-white/15"
+                            >
+                                <svg
+                                    width="22"
+                                    height="22"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="1.9"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M6 7h13l-1.5 9h-10z" />
+                                    <path d="M6 7 5 3H2" />
+                                    <circle cx="9" cy="20" r="1.3" />
+                                    <circle cx="17" cy="20" r="1.3" />
+                                </svg>
+                                {ready && count > 0 && (
+                                    <span
+                                        key={count}
+                                        className="absolute -end-1.5 -top-1.5 flex h-5 min-w-5 animate-pop items-center justify-center rounded-full bg-coral-500 px-1 text-[10px] font-black text-white ring-2 ring-night"
+                                    >
+                                        {fa(count)}
+                                    </span>
+                                )}
+                            </Link>
+
                             <div className="min-w-0 flex-1 text-white">
                                 {product.discount_percent > 0 && (
                                     <p className="text-[11px] text-white/50 line-through">
@@ -149,11 +186,14 @@ export default function AddToCart({ product }: { product: ProductDetail }) {
                                     </span>
                                 </p>
                             </div>
+
                             <button
                                 type="button"
                                 disabled={room === 0}
-                                onClick={addToCart}
-                                className="btn-coral !px-6"
+                                onClick={(event) =>
+                                    addToCart(event.currentTarget)
+                                }
+                                className="btn-coral !px-5"
                             >
                                 {room === 0 ? "سقف موجودی" : "افزودن به سبد"}
                             </button>

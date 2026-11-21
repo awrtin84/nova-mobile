@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ProductVisual from "./ProductVisual";
+import Tilt from "./Tilt";
 import WishlistButton from "./WishlistButton";
 import { fa, faRating, price } from "@/lib/format";
 import type { Product } from "@/lib/types";
@@ -8,12 +9,12 @@ export default function ProductCard({ product }: { product: Product }) {
     const soldOut = product.stock === 0;
 
     return (
-        <div className="relative h-full">
+        <Tilt className="relative h-full">
             <Link
                 href={`/products/${product.slug}`}
-                className="group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-white shadow-card ring-1 ring-slate-900/[.05] transition duration-300 hover:-translate-y-1 hover:shadow-lift active:scale-[.985]"
+                className="preserve-3d group relative flex h-full flex-col rounded-[1.75rem] bg-white shadow-card ring-1 ring-slate-900/[.05] transition-shadow duration-300 hover:shadow-lift active:scale-[.985]"
             >
-                <div className="relative aspect-[5/4] overflow-hidden">
+                <div className="z-pop-1 relative aspect-[5/4] overflow-hidden rounded-[1.75rem] shadow-lg shadow-slate-900/10">
                     <div className="h-full w-full transition duration-700 group-hover:scale-110">
                         <ProductVisual
                             kind={product.visual_kind}
@@ -48,15 +49,15 @@ export default function ProductCard({ product }: { product: Product }) {
                 </div>
 
                 <div className="flex flex-1 flex-col gap-2 p-3.5 sm:p-4">
-                    <p className="text-[11px] font-extrabold tracking-wide text-brand-600">
+                    <p className="z-pop-1 text-[11px] font-extrabold tracking-wide text-brand-600">
                         {product.brand.name}
                     </p>
-                    <h3 className="line-clamp-2 min-h-[2.9rem] text-[13px] font-bold leading-[1.45rem] text-ink sm:text-sm">
+                    <h3 className="z-pop-1 line-clamp-2 min-h-[2.9rem] text-[13px] font-bold leading-[1.45rem] text-ink sm:text-sm">
                         {product.name}
                     </h3>
 
                     <div className="mt-auto flex items-end justify-between gap-2 pt-1">
-                        <div className="min-h-[2.6rem]">
+                        <div className="z-pop-2 min-h-[2.6rem]">
                             {product.discount_percent > 0 && !soldOut && (
                                 <p className="text-[11px] text-ink-mute line-through">
                                     {price(product.price)}
@@ -71,7 +72,7 @@ export default function ProductCard({ product }: { product: Product }) {
                                 </p>
                             )}
                         </div>
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white">
+                        <span className="z-pop-3 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600 shadow-lg shadow-brand-600/20 transition group-hover:bg-brand-600 group-hover:text-white">
                             <svg
                                 width="16"
                                 height="16"
@@ -90,7 +91,9 @@ export default function ProductCard({ product }: { product: Product }) {
                 </div>
             </Link>
 
-            <WishlistButton product={product} />
-        </div>
+            <div className="z-pop-3 pointer-events-none absolute inset-0 [&>button]:pointer-events-auto">
+                <WishlistButton product={product} />
+            </div>
+        </Tilt>
     );
 }
