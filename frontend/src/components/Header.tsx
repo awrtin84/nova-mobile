@@ -141,6 +141,26 @@ function Chips({ categories }: { categories: Category[] }) {
     return (
         <div className="container-page no-scrollbar flex items-center gap-2 overflow-x-auto pb-3 pt-0.5">
             <Link
+                href="/"
+                aria-current={pathname === "/" ? "page" : undefined}
+                className={`${base} hidden items-center gap-1.5 md:inline-flex ${pathname === "/" ? on : idle}`}
+            >
+                <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                >
+                    <path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
+                </svg>
+                خانه
+            </Link>
+            <Link
                 href="/products"
                 className={`${base} ${listing && !category && !onSale ? on : idle}`}
             >
