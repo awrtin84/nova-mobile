@@ -146,7 +146,7 @@ export default function BottomNav() {
                     className="relative -mt-9 flex h-[3.6rem] w-[3.6rem] shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-coral-400 via-coral-500 to-brand-600 text-white shadow-glow ring-4 ring-night transition active:scale-95"
                 >
                     <Icon name="cart" size={26} />
-                    {ready && count > 0 && (
+                    {mounted && ready && count > 0 && (
                         <span
                             key={count}
                             className="absolute -end-1 -top-1 flex h-6 min-w-6 animate-pop items-center justify-center rounded-full bg-white px-1.5 text-[11px] font-black text-coral-600 ring-2 ring-night"
